@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0f">
+<title>Countdown — 1er Jan 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c27;
+    --border: rgba(255,255,255,0.07);
+    --accent: #e84545;
+    --accent-soft: rgba(232,69,69,0.12);
+    --accent-mid: rgba(232,69,69,0.3);
+    --gold: #f0c060;
+    --gold-soft: rgba(240,192,96,0.12);
+    --text: #f0ede8;
+    --text-muted: rgba(240,237,232,0.45);
+    --text-dim: rgba(240,237,232,0.22);
+    --today: #3a8fff;
+    --today-soft: rgba(58,143,255,0.14);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    width: 100%; min-height: 100vh; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── BACKGROUND TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(232,69,69,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 15% 85%, rgba(58,143,255,0.06) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  .app { position: relative; z-index: 1; max-width: 430px; margin: 0 auto; padding: 0 0 80px; }
+
+  /* ── HEADER ── */
+  .header {
+    padding: 56px 20px 28px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em;
+    color: var(--accent); text-transform: uppercase;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .dot-pulse {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+  .header-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 34px; line-height: 1.1;
+    color: var(--text);
+  }
+  .header-title em { font-style: italic; color: var(--accent); }
+  .header-sub {
+    font-size: 13px; color: var(--text-muted);
+    font-weight: 300; margin-top: 2px;
+  }
+
+  /* ── COUNTDOWN CARDS ── */
+  .section { padding: 0 16px; margin-bottom: 20px; }
+  .countdown-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .count-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 16px 16px;
+    position: relative; overflow: hidden;
+  }
+  .count-card.main {
+    grid-column: span 2;
+    background: var(--accent-soft);
+    border-color: var(--accent-mid);
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 20px 20px 18px;
+  }
+  .count-card.main::after {
+    content: '';
+    position: absolute; right: -20px; top: -20px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,69,69,0.18) 0%, transparent 70%);
+  }
+  .count-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px; line-height: 1; color: var(--accent);
+  }
+  .count-card.main .count-num { font-size: 64px; }
+  .count-info { display: flex; flex-direction: column; gap: 2px; }
+  .count-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.12em;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+  .count-card.main .count-label { font-size: 11px; color: var(--accent); }
+  .count-sub { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+
+  /* ── PROGRESS ── */
+  .progress-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 18px 16px;
+    margin: 0 16px 20px;
+  }
+  .progress-top {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .progress-title { font-size: 13px; color: var(--text-muted); font-weight: 400; }
+  .progress-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; color: var(--text); font-weight: 500;
+  }
+  .progress-track {
+    height: 4px; background: var(--surface2);
+    border-radius: 99px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--today) 0%, var(--accent) 100%);
+    transition: width 1s cubic-bezier(.4,0,.2,1);
+  }
+  .progress-dates {
+    display: flex; justify-content: space-between;
+    margin-top: 8px;
+    font-size: 10px; color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── CALENDAR ── */
+  .cal-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    margin: 0 16px; overflow: hidden;
+  }
+  .cal-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 16px 12px;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .cal-month {
+    font-family: 'DM Serif Display', serif;
+    font-size: 19px; color: var(--text);
+  }
+  .nav-btn {
+    width: 36px; height: 36px;
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-btn:active { background: var(--border); color: var(--text); }
+
+  .day-names {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    padding: 10px 8px 4px;
+  }
+  .day-name {
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.1em;
+    color: var(--text-dim); text-transform: uppercase;
+    padding: 4px 0;
+  }
+
+  .cal-body {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 3px; padding: 4px 8px 12px;
+  }
+  .day-cell {
+    border-radius: 10px;
+    padding: 6px 2px 5px;
+    min-height: 54px;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    transition: background 0.1s;
+  }
+  .day-cell.empty { background: none; }
+  .day-cell.past { opacity: 0.3; }
+  .day-cell.future-deadline { opacity: 0.5; }
+  .day-cell.today {
+    background: var(--today-soft);
+    outline: 1px solid rgba(58,143,255,0.4);
+  }
+  .day-cell.deadline {
+    background: var(--accent-soft);
+    outline: 1.5px solid var(--accent-mid);
+  }
+  .day-num {
+    font-size: 13px; font-weight: 500; color: var(--text);
+    line-height: 1;
+  }
+  .day-cell.today .day-num { color: var(--today); font-weight: 500; }
+  .day-cell.deadline .day-num { color: var(--accent); font-weight: 500; }
+  .day-cell.past .day-num { font-weight: 400; }
+  .day-remaining {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px; color: var(--text-dim);
+    text-align: center; line-height: 1.3;
+  }
+  .day-cell.today .day-remaining { color: var(--today); opacity: 0.8; }
+  .day-cell.deadline .day-remaining { color: var(--accent); font-size: 7px; }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    padding: 12px 20px;
+    border-top: 0.5px solid var(--border);
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text-muted);
+  }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 3px;
+  }
+  .legend-dot.today { background: var(--today-soft); outline: 1px solid rgba(58,143,255,0.5); }
+  .legend-dot.deadline { background: var(--accent-soft); outline: 1px solid var(--accent-mid); }
+  .legend-dot.past { background: var(--surface2); opacity: 0.5; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-eyebrow">
+      <span class="dot-pulse"></span>
+      Compte à rebours actif
+    </div>
+    <h1 class="header-title">1<sup>er</sup> <em>janvier</em> 2027</h1>
+    <p class="header-sub" id="today-label">Aujourd'hui — chargement...</p>
+  </div>
+
+  <!-- COUNTDOWN CARDS -->
+  <div class="section">
+    <div class="countdown-grid">
+      <div class="count-card main">
+        <div class="count-info">
+          <div class="count-label">jours restants</div>
+          <div class="count-sub" id="sub-weeks"></div>
+        </div>
+        <div class="count-num" id="cnt-days">—</div>
+      </div>
+      <div class="count-card">
+        <div class="count-label">Mois</div>
+        <div class="count-num" style="font-size:40px" id="cnt-months">—</div>
+      </div>
+      <div class="count-card">
+        <div class="count-label">Semaines</div>
+        <div class="count-num" style="font-size:40px" id="cnt-weeks">—</div>
+      </div>
+      <div class="count-card">
+        <div class="count-label">Jours ouvrés</div>
+        <div class="count-num" style="font-size:36px" id="cnt-work">—</div>
+      </div>
+      <div class="count-card">
+        <div class="count-label">Heures</div>
+        <div class="count-num" style="font-size:36px" id="cnt-hours">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-card">
+    <div class="progress-top">
+      <span class="progress-title">Progression vers la deadline</span>
+      <span class="progress-pct" id="prog-pct">—</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="progress-dates">
+      <span id="prog-start">—</span>
+      <span>1 jan 2027</span>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="cal-card">
+    <div class="cal-nav">
+      <button class="nav-btn" onclick="changeMonth(-1)" aria-label="Mois précédent">&#8249;</button>
+      <span class="cal-month" id="cal-month-title">—</span>
+      <button class="nav-btn" onclick="changeMonth(1)" aria-label="Mois suivant">&#8250;</button>
+    </div>
+    <div class="day-names" id="day-names"></div>
+    <div class="cal-body" id="cal-body"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot today"></div> Aujourd'hui</div>
+      <div class="legend-item"><div class="legend-dot deadline"></div> Deadline</div>
+      <div class="legend-item"><div class="legend-dot past"></div> Passé</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const TODAY = new Date();
+TODAY.setHours(0,0,0,0);
+const DEADLINE = new Date(2027, 0, 1);
+
+const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const DAYS_FR = ['L','M','M','J','V','S','D'];
+const DAYS_FULL = ['lun.','mar.','mer.','jeu.','ven.','sam.','dim.'];
+
+let viewYear = TODAY.getFullYear();
+let viewMonth = TODAY.getMonth();
+
+function daysBetween(a, b) {
+  return Math.round((b - a) / 86400000);
+}
+
+function formatDate(d) {
+  return d.getDate() + ' ' + MONTHS_FR[d.getMonth()].toLowerCase().slice(0,3) + '. ' + d.getFullYear();
+}
+
+function updateCountdown() {
+  const diff = daysBetween(TODAY, DEADLINE);
+  const weeks = Math.floor(diff / 7);
+  const months = Math.floor(diff / 30.44);
+  const hours = diff * 24;
+
+  // approx business days
+  let workDays = 0;
+  let cur = new Date(TODAY);
+  for (let i = 0; i < diff; i++) {
+    const dow = cur.getDay();
+    if (dow !== 0 && dow !== 6) workDays++;
+    cur.setDate(cur.getDate() + 1);
+  }
+
+  document.getElementById('cnt-days').textContent = diff;
+  document.getElementById('cnt-months').textContent = months;
+  document.getElementById('cnt-weeks').textContent = weeks;
+  document.getElementById('cnt-work').textContent = workDays;
+  document.getElementById('cnt-hours').textContent = hours.toLocaleString('fr');
+  document.getElementById('sub-weeks').textContent = weeks + ' semaines et ' + (diff % 7) + ' jours';
+
+  const daysFR = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  document.getElementById('today-label').textContent = 'Aujourd'hui — ' + daysFR[TODAY.getDay()] + ' ' + formatDate(TODAY);
+
+  const REF = new Date(2024, 0, 1);
+  const total = daysBetween(REF, DEADLINE);
+  const elapsed = daysBetween(REF, TODAY);
+  const pct = Math.min(100, Math.max(0, Math.round(elapsed / total * 100)));
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-start').textContent = formatDate(TODAY);
+}
+
+function renderCalendar() {
+  document.getElementById('cal-month-title').textContent = MONTHS_FR[viewMonth] + ' ' + viewYear;
+
+  const names = document.getElementById('day-names');
+  names.innerHTML = DAYS_FR.map(d => `<div class="day-name">${d}</div>`).join('');
+
+  const body = document.getElementById('cal-body');
+  body.innerHTML = '';
+
+  const first = new Date(viewYear, viewMonth, 1);
+  let startDow = first.getDay();
+  startDow = startDow === 0 ? 6 : startDow - 1;
+
+  for (let i = 0; i < startDow; i++) {
+    body.insertAdjacentHTML('beforeend', '<div class="day-cell empty"></div>');
+  }
+
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(viewYear, viewMonth, d);
+    const isToday = date.toDateString() === TODAY.toDateString();
+    const isDeadline = date.toDateString() === DEADLINE.toDateString();
+    const isPast = date < TODAY;
+    const isBeyond = date > DEADLINE;
+
+    let cls = 'day-cell';
+    if (isToday) cls += ' today';
+    else if (isDeadline) cls += ' deadline';
+    else if (isPast) cls += ' past';
+    else if (isBeyond) cls += ' future-deadline';
+
+    let sub = '';
+    if (isDeadline) {
+      sub = '<div class="day-remaining">🏁<br>deadline</div>';
+    } else if (!isPast && !isBeyond) {
+      const dl = daysBetween(date, DEADLINE);
+      sub = `<div class="day-remaining">${dl}j</div>`;
+    } else if (isPast) {
+      const ago = daysBetween(date, TODAY);
+      sub = `<div class="day-remaining">−${ago}j</div>`;
+    }
+
+    body.insertAdjacentHTML('beforeend', `<div class="${cls}"><div class="day-num">${d}</div>${sub}</div>`);
+  }
+}
+
+function changeMonth(dir) {
+  viewMonth += dir;
+  if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+  if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+  renderCalendar();
+}
+
+updateCountdown();
+renderCalendar();
+
+// live clock update every minute
+setInterval(() => {
+  const now = new Date(); now.setHours(0,0,0,0);
+  if (now.toDateString() !== TODAY.toDateString()) location.reload();
+}, 60000);
+</script>
+</body>
+</html>
