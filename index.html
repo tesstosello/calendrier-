@@ -3,547 +3,260 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Countdown — 1er Janvier 2027</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Retraite 2027</title>
 <style>
-:root {
-  --bg: #f5f2ed;
-  --surface: #ffffff;
-  --surface2: #f0ece5;
-  --border: rgba(30,25,20,0.08);
-  --border-strong: rgba(30,25,20,0.15);
-  --accent: #c94a2a;
-  --accent-bg: rgba(201,74,42,0.07);
-  --accent-border: rgba(201,74,42,0.2);
-  --blue: #2a6fc9;
-  --blue-bg: rgba(42,111,201,0.07);
-  --blue-border: rgba(42,111,201,0.25);
-  --text: #1a1612;
-  --text-secondary: rgba(26,22,18,0.55);
-  --text-dim: rgba(240,237,232,0.22);
-  --radius: 14px;
-  --radius-sm: 8px;
-  --mono: 'JetBrains Mono', monospace;
-  --serif: 'Playfair Display', serif;
-  --sans: 'Syne', sans-serif;
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: var(--sans);
-  background: var(--bg);
-  color: var(--text);
+  font-family: Arial, sans-serif;
   min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ── LAYOUT ── */
-.page {
-  max-width: 680px;
-  margin: 0 auto;
-  padding: 0 16px 64px;
-}
-
-/* ── HERO ── */
-.hero {
-  padding: 48px 0 36px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 32px;
-}
-
-.eyebrow {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.eyebrow::before {
-  content: '';
-  display: inline-block;
-  width: 20px;
-  height: 1px;
-  background: var(--accent);
-}
-
-.hero-title {
-  font-family: var(--serif);
-  font-size: clamp(36px, 8vw, 56px);
-  font-weight: 400;
-  line-height: 1.1;
-  color: var(--text);
-  margin-bottom: 8px;
-}
-
-.hero-title em {
-  font-style: italic;
-  color: var(--accent);
-}
-
-.hero-sub {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-top: 12px;
-}
-
-/* ── COUNTDOWN GRID ── */
-.count-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 24px;
-}
-
-.count-hero {
-  grid-column: span 2;
-  background: var(--accent);
-  border-radius: var(--radius);
-  padding: 24px 28px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  position: relative;
   overflow: hidden;
+  background: linear-gradient(180deg, #7ecbf5 0%, #b8e4ff 45%, #8ed87a 45%, #5fb84d 100%);
 }
 
-.count-hero::after {
-  content: '';
+@keyframes drive { from { left: -120px; } to { left: 105%; } }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes shimmer { 0%,100% { box-shadow: 0 0 40px #ffd93d88; } 50% { box-shadow: 0 0 70px #ffd93dcc; } }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+
+.sun {
   position: absolute;
-  right: -30px; top: -30px;
-  width: 120px; height: 120px;
+  top: 28px; right: 70px;
+  width: 80px; height: 80px;
+  background: #ffd93d;
   border-radius: 50%;
-  background: rgba(255,255,255,0.08);
+  animation: shimmer 3s ease-in-out infinite;
 }
 
-.count-hero .label {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.7);
-  margin-bottom: 4px;
+.container {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding-top: 60px;
 }
 
-.count-hero .num {
-  font-family: var(--serif);
-  font-size: clamp(52px, 12vw, 72px);
-  line-height: 1;
-  color: #fff;
-  font-weight: 700;
-}
-
-.count-hero .sub {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: rgba(255,255,255,0.6);
-}
-
-.count-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 16px;
-}
-
-.count-card .label {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
+h1 {
+  font-size: 2.2rem;
+  font-weight: 500;
+  color: #1a4a20;
+  text-shadow: 0 2px 8px rgba(255,255,255,0.5);
   margin-bottom: 6px;
 }
 
-.count-card .num {
-  font-family: var(--serif);
-  font-size: clamp(30px, 7vw, 42px);
-  line-height: 1;
-  color: var(--text);
+.subtitle {
+  font-size: 1rem;
+  color: #2d6e2d;
+  margin-bottom: 32px;
 }
 
-/* ── PROGRESS ── */
-.progress-block {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 24px;
-}
-
-.progress-top {
+.countdown {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.progress-top .label {
-  font-size: 13px;
-  color: var(--text-secondary);
-}
-
-.progress-top .pct {
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-}
-
-.progress-track {
-  height: 3px;
-  background: var(--surface2);
-  border-radius: 99px;
-  overflow: hidden;
-  margin-bottom: 10px;
-}
-
-.progress-fill {
-  height: 100%;
-  border-radius: 99px;
-  background: linear-gradient(90deg, var(--blue) 0%, var(--accent) 100%);
-}
-
-.progress-dates {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-secondary);
-}
-
-/* ── CALENDAR ── */
-.cal-block {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.cal-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 18px;
-  border-bottom: 1px solid var(--border);
-}
-
-.cal-month {
-  font-family: var(--serif);
-  font-size: 20px;
-  font-weight: 400;
-  color: var(--text);
-}
-
-.nav-btn {
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  transition: background 0.15s, color 0.15s;
-  font-family: var(--sans);
+  gap: 14px;
+  flex-wrap: wrap;
 }
 
-.nav-btn:hover { background: var(--surface2); color: var(--text); }
-
-.day-names {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  border-bottom: 1px solid var(--border);
+.box {
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 18px 20px;
+  min-width: 110px;
+  border: 1px solid rgba(255,255,255,0.7);
 }
 
-.day-name {
-  text-align: center;
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  padding: 10px 0;
-}
-
-.cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-  padding: 8px;
-}
-
-.day-cell {
-  border-radius: 8px;
-  padding: 6px 3px 5px;
-  min-height: 52px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-}
-
-.day-cell.past {
-  opacity: 0.35;
-}
-
-.day-cell.beyond {
-  opacity: 0.2;
-}
-
-.day-cell.today {
-  background: var(--blue-bg);
-  outline: 1px solid var(--blue-border);
-}
-
-.day-cell.deadline {
-  background: var(--accent-bg);
-  outline: 1.5px solid var(--accent-border);
-}
-
-.day-num {
-  font-family: var(--sans);
-  font-size: 12px;
+.number {
+  font-size: 2.6rem;
   font-weight: 500;
-  color: var(--text);
+  color: #1a4a20;
   line-height: 1;
 }
 
-.day-cell.today .day-num { color: var(--blue); }
-.day-cell.deadline .day-num { color: var(--accent); font-weight: 700; }
-
-.day-rest {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text-secondary);
-  text-align: center;
-  line-height: 1.2;
+.label {
+  font-size: 0.75rem;
+  color: #3a7a3a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
 }
 
-.day-cell.today .day-rest { color: var(--blue); }
-.day-cell.deadline .day-rest { color: var(--accent); font-size: 8px; }
-
-/* ── LEGEND ── */
-.legend {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  padding: 14px 18px;
-  border-top: 1px solid var(--border);
+.message {
+  font-size: 0.9rem;
+  color: #1a4a20;
+  font-weight: 500;
+  margin-top: 24px;
+  animation: pulse 3s ease-in-out infinite;
+  display: inline-block;
 }
 
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 11px;
-  color: var(--text-secondary);
-  font-family: var(--mono);
+.ground {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%;
+  height: 100px;
+  background: #5fb84d;
 }
 
-.legend-dot {
-  width: 10px; height: 10px;
-  border-radius: 3px;
-  flex-shrink: 0;
+.hay { position: absolute; bottom: 62px; font-size: 42px; }
+.hay1 { left: 8%; animation: bob 2.5s ease-in-out infinite; }
+.hay2 { left: 38%; animation: bob 2.5s ease-in-out infinite 0.8s; }
+.hay3 { left: 72%; animation: bob 2.5s ease-in-out infinite 1.4s; }
+
+.horse { position: absolute; bottom: 62px; font-size: 44px; }
+.horse1 { left: 22%; animation: bob 1.8s ease-in-out infinite 0.3s; }
+.horse2 { left: 58%; animation: bob 1.8s ease-in-out infinite 0.9s; }
+
+.tractor {
+  position: absolute;
+  bottom: 62px;
+  font-size: 54px;
+  animation: drive 18s linear infinite;
+}
+.tractor2 { animation-delay: 9s; }
+
+.ground-strip {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%;
+  height: 62px;
+  background: #4aa33a;
 }
 
-.legend-dot.today { background: var(--blue-bg); outline: 1px solid var(--blue-border); }
-.legend-dot.deadline { background: var(--accent-bg); outline: 1px solid var(--accent-border); }
-.legend-dot.past { background: var(--surface2); outline: 1px solid var(--border-strong); }
-
-/* ── DESKTOP ENHANCEMENTS ── */
-@media (min-width: 480px) {
-  .page { padding: 0 24px 64px; }
-  .hero { padding: 64px 0 40px; }
-  .count-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
-  .count-hero { grid-column: span 4; }
-}
-
-@media (min-width: 640px) {
-  .page { padding: 0 32px 80px; }
-  .cal-grid { gap: 4px; padding: 12px; }
-  .day-cell { min-height: 58px; padding: 8px 4px 6px; }
-  .day-num { font-size: 13px; }
-  .day-rest { font-size: 10px; }
-}
+.flower { position: absolute; bottom: 14px; }
 </style>
 </head>
 <body>
-<main class="page">
 
-  <header class="hero">
-    <div class="eyebrow">compte à rebours</div>
-    <h1 class="hero-title">1<sup>er</sup> <em>janvier</em><br>2027</h1>
-    <p class="hero-sub" id="today-label">—</p>
-  </header>
+<!-- Sun -->
+<div class="sun"></div>
 
-  <section class="count-grid" aria-label="Décompte">
-    <div class="count-hero">
-      <div>
-        <div class="label">jours restants</div>
-        <div class="sub" id="cnt-sub">—</div>
-      </div>
-      <div class="num" id="cnt-days">—</div>
+<!-- Sun rays -->
+<svg style="position:absolute;top:12px;right:54px;" width="112" height="112" viewBox="0 0 112 112">
+  <g stroke="#ffd93d" stroke-width="2" opacity="0.5">
+    <line x1="56" y1="4" x2="56" y2="14"/>
+    <line x1="56" y1="98" x2="56" y2="108"/>
+    <line x1="4" y1="56" x2="14" y2="56"/>
+    <line x1="98" y1="56" x2="108" y2="56"/>
+    <line x1="18" y1="18" x2="25" y2="25"/>
+    <line x1="87" y1="87" x2="94" y2="94"/>
+    <line x1="94" y1="18" x2="87" y2="25"/>
+    <line x1="25" y1="87" x2="18" y2="94"/>
+  </g>
+</svg>
+
+<!-- Clouds -->
+<svg style="position:absolute;top:30px;left:40px;" width="110" height="40" viewBox="0 0 110 40">
+  <ellipse cx="45" cy="28" rx="42" ry="18" fill="white" opacity="0.82"/>
+  <ellipse cx="70" cy="24" rx="28" ry="16" fill="white" opacity="0.82"/>
+  <ellipse cx="25" cy="30" rx="22" ry="13" fill="white" opacity="0.82"/>
+</svg>
+<svg style="position:absolute;top:14px;left:240px;" width="80" height="34" viewBox="0 0 80 34">
+  <ellipse cx="35" cy="22" rx="32" ry="14" fill="white" opacity="0.65"/>
+  <ellipse cx="55" cy="18" rx="22" ry="12" fill="white" opacity="0.65"/>
+</svg>
+
+<!-- Birds -->
+<svg style="position:absolute;top:55px;left:180px;" width="60" height="20" viewBox="0 0 60 20">
+  <path d="M2 10 Q8 4 14 10" fill="none" stroke="#5a8fa0" stroke-width="1.5"/>
+  <path d="M18 8 Q24 2 30 8" fill="none" stroke="#5a8fa0" stroke-width="1.5"/>
+  <path d="M34 12 Q40 6 46 12" fill="none" stroke="#5a8fa0" stroke-width="1.5"/>
+</svg>
+
+<!-- Main content -->
+<div class="container">
+  <h1>🎉 Cap sur la Retraite</h1>
+  <p class="subtitle">Le grand départ approche…</p>
+
+  <div class="countdown">
+    <div class="box">
+      <div class="number" id="days">0</div>
+      <div class="label">Jours</div>
     </div>
-    <div class="count-card">
-      <div class="label">Mois</div>
-      <div class="num" id="cnt-months">—</div>
-    </div>
-    <div class="count-card">
-      <div class="label">Semaines</div>
-      <div class="num" id="cnt-weeks">—</div>
-    </div>
-    <div class="count-card">
-      <div class="label">Jours ouvrés</div>
-      <div class="num" id="cnt-work">—</div>
-    </div>
-    <div class="count-card">
+    <div class="box">
+      <div class="number" id="hours">0</div>
       <div class="label">Heures</div>
-      <div class="num" id="cnt-hours">—</div>
     </div>
-  </section>
-
-  <div class="progress-block">
-    <div class="progress-top">
-      <span class="label">Progression</span>
-      <span class="pct" id="prog-pct">—</span>
+    <div class="box">
+      <div class="number" id="minutes">0</div>
+      <div class="label">Minutes</div>
     </div>
-    <div class="progress-track">
-      <div class="progress-fill" id="prog-fill" style="width:0%"></div>
-    </div>
-    <div class="progress-dates">
-      <span id="prog-start">—</span>
-      <span>1 jan. 2027</span>
+    <div class="box">
+      <div class="number" id="seconds">0</div>
+      <div class="label">Secondes</div>
     </div>
   </div>
 
-  <div class="cal-block">
-    <div class="cal-nav">
-      <button class="nav-btn" onclick="changeMonth(-1)" aria-label="Mois précédent">&#8249;</button>
-      <span class="cal-month" id="cal-title">—</span>
-      <button class="nav-btn" onclick="changeMonth(1)" aria-label="Mois suivant">&#8250;</button>
-    </div>
-    <div class="day-names" id="day-names"></div>
-    <div class="cal-grid" id="cal-grid"></div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot today"></div>Aujourd'hui</div>
-      <div class="legend-item"><div class="legend-dot deadline"></div>Deadline</div>
-      <div class="legend-item"><div class="legend-dot past"></div>Passé</div>
-    </div>
-  </div>
+  <div class="message">🚜 Encore un peu de route avant la liberté ! 🌾</div>
+</div>
 
-</main>
+<!-- Ground scene -->
+<div class="ground">
+  <svg style="position:absolute;bottom:60px;left:0;" width="100%" height="50" viewBox="0 0 100 50" preserveAspectRatio="none">
+    <path d="M0 50 Q12 10 24 30 Q38 50 53 20 Q67 0 82 25 Q94 45 100 30 L100 50 Z" fill="#4aa33a"/>
+  </svg>
+  <svg style="position:absolute;bottom:58px;left:0;width:100%;height:30px;" viewBox="0 0 680 30" preserveAspectRatio="none">
+    <line x1="0" y1="10" x2="680" y2="10" stroke="#8b5e3c" stroke-width="2"/>
+    <line x1="0" y1="22" x2="680" y2="22" stroke="#8b5e3c" stroke-width="2"/>
+    <line x1="30"  y1="4" x2="30"  y2="28" stroke="#8b5e3c" stroke-width="3"/>
+    <line x1="90"  y1="4" x2="90"  y2="28" stroke="#8b5e3c" stroke-width="3"/>
+    <line x1="150" y1="4" x2="150" y2="28" stroke="#8b5e3c" stroke-width="3"/>
+    <line x1="210" y1="4" x2="210" y2="28" stroke="#8b5e3c" stroke-width="3"/>
+    <line x1="270" y1="4" x2="270" y2="28" stroke="#8b5e3c" stroke-width="3"/>
+    <line x1="330" y1="4" x2="330" y2="28" stroke="#8b5e3c" stroke-width="3"/>
+    <line x1="390" y1="4" x2="390" y2="28" stroke="#8b5e3c" stroke-width="3"/>
+    <line x1="450" y1="4" x2="450" y2="28" stroke="#8b5e3c" stroke-width="3"/>
+    <line x1="510" y1="4" x2="510" y2="28" stroke="#8b5e3c" stroke-width="3"/>
+    <line x1="570" y1="4" x2="570" y2="28" stroke="#8b5e3c" stroke-width="3"/>
+    <line x1="630" y1="4" x2="630" y2="28" stroke="#8b5e3c" stroke-width="3"/>
+  </svg>
+
+  <div class="hay hay1">🌾</div>
+  <div class="hay hay2">🌾</div>
+  <div class="hay hay3">🌾</div>
+  <div class="horse horse1">🐴</div>
+  <div class="horse horse2">🐴</div>
+  <div class="tractor">🚜</div>
+  <div class="tractor tractor2">🚜</div>
+
+  <div class="ground-strip"></div>
+  <div class="flower" style="left:5%;font-size:18px;">🌻</div>
+  <div class="flower" style="left:15%;font-size:14px;">🌼</div>
+  <div class="flower" style="left:48%;font-size:16px;">🌻</div>
+  <div class="flower" style="left:65%;font-size:14px;">🌼</div>
+  <div class="flower" style="left:85%;font-size:18px;">🌻</div>
+  <div class="flower" style="left:92%;font-size:14px;">🌼</div>
+</div>
 
 <script>
-const TODAY = new Date();
-TODAY.setHours(0,0,0,0);
-const DEADLINE = new Date(2027, 0, 1);
+const target = new Date("January 1, 2027 00:00:00").getTime();
 
-const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-const DAYS_SHORT = ['L','M','M','J','V','S','D'];
-const DAYS_LONG = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+function pad(n) { return String(n).padStart(2, '0'); }
 
-let viewYear = TODAY.getFullYear();
-let viewMonth = TODAY.getMonth();
+function tick() {
+  const dist = target - Date.now();
 
-function diff(a, b) {
-  return Math.round((b - a) / 86400000);
-}
-
-function fmt(d) {
-  return d.getDate() + ' ' + MONTHS[d.getMonth()].slice(0,3).toLowerCase() + '. ' + d.getFullYear();
-}
-
-function init() {
-  const days = diff(TODAY, DEADLINE);
-  const weeks = Math.floor(days / 7);
-  const months = Math.floor(days / 30.44);
-
-  let work = 0, c = new Date(TODAY);
-  for (let i = 0; i < days; i++) {
-    if (c.getDay() !== 0 && c.getDay() !== 6) work++;
-    c.setDate(c.getDate() + 1);
+  if (dist <= 0) {
+    document.body.innerHTML = `
+      <div style="display:flex;justify-content:center;align-items:center;height:100vh;
+        background:linear-gradient(180deg,#7ecbf5,#5fb84d);color:#1a4a20;
+        font-family:Arial;text-align:center;padding:20px;">
+        <div>
+          <h1 style="font-size:3.5rem;margin-bottom:16px;">🎉 Bonne Retraite !</h1>
+          <p style="font-size:1.5rem;">Il est temps de profiter de la vie ! 🚜🌾🐴</p>
+        </div>
+      </div>`;
+    return;
   }
 
-  document.getElementById('cnt-days').textContent = days;
-  document.getElementById('cnt-months').textContent = months;
-  document.getElementById('cnt-weeks').textContent = weeks;
-  document.getElementById('cnt-work').textContent = work;
-  document.getElementById('cnt-hours').textContent = (days * 24).toLocaleString('fr');
-  document.getElementById('cnt-sub').textContent = weeks + ' semaines · ' + (days % 7) + ' jours';
-  document.getElementById('today-label').textContent = DAYS_LONG[TODAY.getDay()] + ' ' + fmt(TODAY);
-
-  const REF = new Date(2024, 0, 1);
-  const total = diff(REF, DEADLINE);
-  const elapsed = diff(REF, TODAY);
-  const pct = Math.min(100, Math.max(0, Math.round(elapsed / total * 100)));
-  document.getElementById('prog-pct').textContent = pct + '%';
-  document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('prog-start').textContent = fmt(TODAY);
+  document.getElementById('days').textContent    = Math.floor(dist / 864e5);
+  document.getElementById('hours').textContent   = pad(Math.floor((dist % 864e5) / 36e5));
+  document.getElementById('minutes').textContent = pad(Math.floor((dist % 36e5)  / 6e4));
+  document.getElementById('seconds').textContent = pad(Math.floor((dist % 6e4)   / 1e3));
 }
 
-function renderCal() {
-  document.getElementById('cal-title').textContent = MONTHS[viewMonth] + ' ' + viewYear;
-
-  document.getElementById('day-names').innerHTML =
-    DAYS_SHORT.map(d => `<div class="day-name">${d}</div>`).join('');
-
-  const grid = document.getElementById('cal-grid');
-  grid.innerHTML = '';
-
-  let startDow = new Date(viewYear, viewMonth, 1).getDay();
-  startDow = startDow === 0 ? 6 : startDow - 1;
-  for (let i = 0; i < startDow; i++)
-    grid.insertAdjacentHTML('beforeend', '<div class="day-cell"></div>');
-
-  const total = new Date(viewYear, viewMonth + 1, 0).getDate();
-  for (let d = 1; d <= total; d++) {
-    const date = new Date(viewYear, viewMonth, d);
-    const isToday    = date.toDateString() === TODAY.toDateString();
-    const isDeadline = date.toDateString() === DEADLINE.toDateString();
-    const isPast     = date < TODAY;
-    const isBeyond   = date > DEADLINE;
-
-    let cls = 'day-cell';
-    if (isToday)    cls += ' today';
-    else if (isDeadline) cls += ' deadline';
-    else if (isPast)     cls += ' past';
-    else if (isBeyond)   cls += ' beyond';
-
-    let sub = '';
-    if (isDeadline) {
-      sub = '<div class="day-rest">🏁<br>fin</div>';
-    } else if (!isPast && !isBeyond) {
-      sub = `<div class="day-rest">${diff(date, DEADLINE)}j</div>`;
-    }
-
-    grid.insertAdjacentHTML('beforeend',
-      `<div class="${cls}"><div class="day-num">${d}</div>${sub}</div>`);
-  }
-}
-
-function changeMonth(dir) {
-  viewMonth += dir;
-  if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-  if (viewMonth < 0)  { viewMonth = 11; viewYear--; }
-  renderCal();
-}
-
-init();
-renderCal();
+tick();
+setInterval(tick, 1000);
 </script>
+
 </body>
 </html>
